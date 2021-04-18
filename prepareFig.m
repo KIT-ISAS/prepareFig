@@ -1,28 +1,30 @@
-function prepareFig(size, scaling, fontSize, lineWidth, useLaTeX, useMathAxis, fontName)
-% prepareFig v5.0 by Florian Pfaff pfaff@kit.edu
+function prepareFig(size, opt)
+% prepareFig v6.0 by Florian Pfaff pfaff@kit.edu
 arguments
     % size: Set the target size of the plot.
     size(1, 2) double = [8, 5]
     % scaling: Scaling of the plot. This can help, e.g., to prevent
     % large legend boxes.
-    scaling(1, 1) double = 2
+    opt.scaling(1, 1) double = 2
     % fontSize: Set the size of the font used.
-    fontSize(1, 1) double = 7
+    opt.fontSize(1, 1) double = 7
     % lineWidth: Set the width of the lines of the plot.
-    lineWidth(1, 1) double = 0.6
+    opt.lineWidth(1, 1) double = 0.6
     % useLaTeX: Choose whether text (axis labels, tick labels, legends)
     % should be rendered using LaTeX
-    useLaTeX(1, 1) logical = true
+    opt.useLaTeX(1, 1) logical = true
     % useMathAxis: Logical with up to three entries
     % Choose if math mode should be invoked for axis labels. If only
     % one logical is given, math mode is enabled/disabled for all axes.
-    useMathAxis(:, 1) logical = false
+    opt.useMathAxis(:, 1) logical = false
     % Font to use (only relevant if LaTeX is not used)
-    fontName char = 'Times'
+    opt.fontName char = 'Times'
 end
-% Changelog:
-% 5.0 16-11-2019 now using argumentsd block of Matlab
-% 4.8 24-11-2018 Papersize is set first. This prevents a messup of the
+% Changelog (YYYY-MM-DD)
+% 6.0 2021-04-18 Use named arguments
+% 5.1 2020-03-24 Added check if axes object exists
+% 5.0 2019-11-16 Now using argumentsd block of Matlab
+% 4.8 2018-11-24 Papersize is set first. This prevents a messup of the
 % tick labels if the number of tick labels changes afterward.
 % 4.7 Remove AxesToolbars (for 2018b and later)
 % 4.6 Fixed bug introduced in previous change
@@ -33,6 +35,8 @@ end
 % 4.1 Shift by 10 units on screen
 % 4.0 Adding $ $ to tick labels when real numbers or \pi is found.
 % 3.1 allows diabling LaTeX
+scaling = opt.scaling; fontSize = opt.fontSize; lineWidth = opt.lineWidth;
+useLaTeX = opt.useLaTeX; useMathAxis = opt.useMathAxis; fontName=opt.fontName;
 paperSize = size * scaling;
 set(gcf, ... Comment in next line to make background transparent. For export_fig, -transparent can be used instead
     ... %'Color', 'None', ...
@@ -64,6 +68,7 @@ switch numel(useMathAxis)
 end
 delete(findall(gcf, 'Type', 'AxesToolbar')); % Remove all AxesToolbars (for Matlab 2018b and later)
 allAxes = findall(gcf, 'Type', 'Axes');
+assert(~isempty(allAxes), 'No axes object found. This function currently only supports figures with at least one axes object.');
 box on
 set(allAxes, 'LineWidth', lineWidth*scaling);
 set([findall(allAxes, 'type', 'Line'), findall(allAxes, 'type', 'FunctionLine')], 'LineWidth', lineWidth*scaling);
