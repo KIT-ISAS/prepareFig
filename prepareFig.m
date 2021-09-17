@@ -1,5 +1,5 @@
 function prepareFig(size, opt)
-% prepareFig v6.0 by Florian Pfaff pfaff@kit.edu
+% prepareFig v6.1 by Florian Pfaff pfaff@kit.edu
 arguments
     % size: Set the target size of the plot.
     size(1, 2) double = [8, 5]
@@ -21,6 +21,7 @@ arguments
     opt.fontName char = 'Times'
 end
 % Changelog (YYYY-MM-DD)
+% 6.1 2021-09-17 Now also scaling lines for quiver and scatter
 % 6.0 2021-04-18 Use named arguments
 % 5.1 2020-03-24 Added check if axes object exists
 % 5.0 2019-11-16 Now using argumentsd block of Matlab
@@ -71,7 +72,7 @@ allAxes = findall(gcf, 'Type', 'Axes');
 assert(~isempty(allAxes), 'No axes object found. This function currently only supports figures with at least one axes object.');
 box on
 set(allAxes, 'LineWidth', lineWidth*scaling);
-set([findall(allAxes, 'type', 'Line'), findall(allAxes, 'type', 'FunctionLine')], 'LineWidth', lineWidth*scaling);
+set([findall(allAxes, 'type', 'Line'); findall(allAxes, 'type', 'FunctionLine'); findall(allAxes,'type','quiver'); findall(allAxes,'type','scatter')], 'LineWidth', lineWidth*scaling);
 set(allAxes, 'Color', 'none'); % Otherwise, axis will not be transparent, only figure background
 
 set(allAxes, 'FontSize', fontSize*scaling);
